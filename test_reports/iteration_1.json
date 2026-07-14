@@ -1,0 +1,66 @@
+{
+  "summary": "Comprehensive backend + frontend testing of QR Nexus. 27/29 backend pytest cases passed. Frontend flows (landing, login, dashboard, companies CRUD via UI, QR wizard 4 steps end-to-end, QR details with tabs & downloads, theme toggle, manager restricted sidebar) all work. ONE CRITICAL infra bug: /r/{short_code} public redirect route is NOT exposed via the Kubernetes ingress (only /api/* is routed to backend), so QRs will not redirect for real scanners hitting the preview URL — the URL returns the React SPA HTML instead of the backend redirect.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "GET /r/{short_code}",
+        "issue": "Public QR redirect endpoint is unreachable via external preview URL (https://qrnexus-manager.preview.emergentagent.com/r/<code>). The ingress only proxies /api/* to backend on port 8001; any non-/api path is served by the frontend (React index.html). Backend works fine at localhost:8001/r/<code> returning 302 redirects, but externally clients receive the React app HTML with status 200. This breaks the primary product feature — QR scans will never redirect. FIX: either move the public router to /api/r/{short_code} (recommended), or reconfigure the ingress to route /r/* to the backend. The QR PNG content is generated from that same URL (see qr.py _redirect_url + preview_qr), so QR images currently embed a non-functional URL.",
+        "priority": "CRITICAL"
+      }
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "QR scan redirect",
+        "issue": "Since backend /r/{code} route is not exposed externally, generated QR codes embed a URL that returns the React SPA instead of redirecting. End users scanning printed QRs will see the QR Nexus web app landing/dashboard instead of the intended destination.",
+        "affected_selectors": []
+      }
+    ],
+    "design_issues": [
+      {
+        "screen": "QR Create wizard - Step 4 Assign",
+        "issues": [
+          "EXPIRY field uses browser default datetime-local picker (mm/dd/yyyy) instead of shadcn Calendar component (violates PRD 'shadcn calendar' expectation).",
+          "Recharts warnings on dashboard: 'width(-1) height(-1) of chart should be greater than 0' — some ResponsiveContainer parents have 0 min-height causing repeated console warnings (not visible bug but noisy)."
+        ]
+      },
+      {
+        "screen": "Dialogs (New Company, etc.)",
+        "issues": [
+          "DialogContent missing aria-describedby/Description (accessibility warning from Radix UI)."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "URGENT: Fix /r/{short_code} ingress/routing so QR redirects actually work externally. Simplest fix: change router prefix in /app/backend/routers/public.py to '/api/r' and update qr._redirect_url() to build '.../api/r/<code>'. Then QRs will scan correctly on the preview URL.",
+    "Replace native <input type='datetime-local'> in QRCreate wizard step 4 with shadcn Calendar/DatePicker.",
+    "Add DialogDescription to all DialogContent components to satisfy Radix a11y.",
+    "Fix Recharts ResponsiveContainer parent heights on Dashboard KPI section to remove width/height(-1) warnings."
+  ],
+  "critical_code_review_comments": [
+    "Public QR redirect route mounted at '/r' bypasses the /api ingress rule — architectural mismatch with deployment. This makes the feature non-functional in production.",
+    "server.py: CORS allow_credentials is False when origins=='*'; if httpOnly cookies are meant to be used from frontend, must set explicit origins & credentials=True. Currently frontend uses Bearer tokens so it works, but the cookie code path is effectively dead.",
+    "auth.py: change_password does not invalidate existing refresh/access tokens after password change.",
+    "qr.py update_qr: version increments only on 'data' change, not on 'design' — inconsistent with 'version history' semantics.",
+    "misc.py folders update: uses payload.model_dump(exclude_unset=True) but FolderIn.name is required (min_length=1), so partial updates will fail if name omitted.",
+    "public.py: geo_lookup called on every scan (ip-api free is 45 req/min) — should be cached or fire-and-forget to avoid slowing redirects."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py (created)"
+  ],
+  "success_rate": {"backend": "93% (27/29)", "frontend": "100% of tested flows"},
+  "test_credentials": "Super Admin: koushikqr741@gmail.com / Qr@501 (unchanged after test). Test managers created with prefix 'test-manager-*@qrnexus.io' and 'ui-mgr-*@qrnexus.io'.",
+  "seed_data_creation": "Tests create TEST_-prefixed companies, managers, folders, and QR codes. Not all are cleaned up; consider a cleanup pass or filter TEST_ items from prod views.",
+  "retest_needed": true,
+  "main_agent_can_self_test": false,
+  "context_for_next_testing_agent": "Backend tests are in /app/backend/tests/backend_test.py — run with 'pytest backend/tests/backend_test.py -v'. The 2 failing tests (test_scan_redirect_and_analytics, test_pause_and_resume) both fail for the SAME root cause: /r/{short_code} is proxied to frontend, not backend. Once main agent moves the route under /api/r/ (or fixes ingress), update those two tests to hit /api/r/{code} and they should pass. All other flows (auth, RBAC, companies, managers, QR CRUD, analytics, dashboard, folders, uploads, brute force) are green.",
+  "rca of the issue": "Root cause of /r/{code} failure: Kubernetes ingress rule only forwards paths beginning with '/api' to the backend service (port 8001). Any other path is served by the React dev server (port 3000). The public router in /app/backend/routers/public.py registers at prefix '/r' without the '/api' prefix, so external requests to https://<host>/r/<code> hit the frontend which returns index.html for all SPA routes. Reproduction: `curl -s -o /dev/null -w '%{http_code}' https://qrnexus-manager.preview.emergentagent.com/r/anycode` → 200 (React HTML), while `curl http://localhost:8001/r/anycode` → 404 (backend). Mitigation: change prefix to '/api/r' in public.py AND update qr.py _redirect_url() to build '/api/r/{short_code}'."
+}

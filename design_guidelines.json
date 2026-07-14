@@ -1,0 +1,118 @@
+{
+  "theme": {
+    "mode": "dark_and_light",
+    "strategy": "Archetype 4: Swiss & High-Contrast (Authority, Clarity, Truth)",
+    "description": "A premium, structural aesthetic relying heavily on extreme contrasts and minimalist geometry, avoiding the common 'tech' look of purple gradients and soft shadows."
+  },
+  "typography": {
+    "headings": {
+      "family": "Outfit, sans-serif",
+      "import_url": "https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap",
+      "classes": "font-sans tracking-tight leading-none",
+      "guidelines": "Never center headings by default. Use explicit alignment and hierarchy. H1 max text-5xl or text-6xl. This provides a strong, geometric, and distinct look."
+    },
+    "body": {
+      "family": "IBM Plex Sans, sans-serif",
+      "import_url": "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap",
+      "classes": "font-sans leading-relaxed",
+      "guidelines": "Left-align dense content. Perfect for data-heavy dashboard tables and clarity, creating a slight 'editorial' tension against the geometric headings."
+    },
+    "mono": {
+      "family": "JetBrains Mono, monospace",
+      "import_url": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap",
+      "guidelines": "Use for raw data, QR code IDs, technical specs, and stats."
+    }
+  },
+  "colors": {
+    "palette": {
+      "primary": "#FF3B30",
+      "primary_hover": "#D63026",
+      "dark": {
+        "background": "#050505",
+        "surface": "#111111",
+        "border": "rgba(255,255,255,0.12)",
+        "text_main": "#FFFFFF",
+        "text_muted": "#A1A1AA"
+      },
+      "light": {
+        "background": "#F4F4F0",
+        "surface": "#FFFFFF",
+        "border": "rgba(0,0,0,0.12)",
+        "text_main": "#0A0A0A",
+        "text_muted": "#52525B"
+      }
+    },
+    "guidelines": "Color is Function Only. 95% of the UI should be monochrome (blacks, whites, grays). Use the Signal Red (#FF3B30) strictly to guide action or show active states. Never use default blue or generic purple gradients."
+  },
+  "visual_enhancers": {
+    "surfaces": {
+      "header": "Crystal Glass: bg-white/70 or bg-black/60 with backdrop-blur-xl and border-b. MUST not be purely transparent over content.",
+      "cards": "Grid Borders concept. Use border-collapse style. Subtle 1px borders, NO soft shadows. Flat background. Hover states should feature slight lift and a sharper border, not a blurry shadow.",
+      "textures": "Kill digital flatness with subtle noise/grain overlays on hero backgrounds and large marketing surfaces."
+    }
+  },
+  "layouts": {
+    "marketing": {
+      "grid": "The 'Tetris' Grid. Asymmetrical grid structures. col-span-full md:col-span-8 row-span-2 for the Hero visual.",
+      "spacing": "Generous Spacing (py-24 to py-32). Containers with borders must have internal padding (p-6 or p-8).",
+      "components": "Use pure HTML/Tailwind for marketing layout structures, not Shadcn structural components, to allow maximum creative freedom."
+    },
+    "dashboard": {
+      "structure": "Collapsible left-sidebar (240-280px) + Main Content Area. Move away from top-bar navigation.",
+      "density": "High Density Grid. gap-4 or gap-6. Surface 5-7 core KPIs first (Progressive Disclosure).",
+      "components": "Use Shadcn components extensively but heavily customize them. Strip out default soft shadows. Use sharp 1px borders with a max 4px border-radius."
+    }
+  },
+  "feature_specific_guidelines": {
+    "qr_wizard": "For the Super Admin QR creation wizard, use Progressive Disclosure. Do not show all 30+ types at once. Group them into distinct categories (e.g., URL, Media, Business) with icons. Use a live preview pane on the right side (sticky) while the form scrolls on the left.",
+    "analytics_dashboard": "Use Actionable-First Layout. Realtime scan analytics (world map, device breakdown) should use Recharts. The world map/charts should use the monochrome palette with Signal Red (#FF3B30) for data highlights."
+  },
+  "motion": {
+    "marketing": "Framer Motion for scroll-triggered asymmetrical reveals. Staggered children animations for lists/grids.",
+    "dashboard": "Minimalist. Hover lifts (-translate-y-1), subtle shadows, fast state transitions. No disruptive animations. Use sonner for toasts."
+  },
+  "accessibility": {
+    "contrast": "Ensure text meets APCA standards against backgrounds. ALWAYS explicitly set text color on hover (e.g., hover:bg-slate-900 hover:text-white).",
+    "focus": "Focus states must have HIGHER contrast. Use focus:ring-2 focus:ring-[#FF3B30] focus:outline-none.",
+    "motion": "Respect prefers-reduced-motion."
+  },
+  "media": {
+    "images": [
+      {
+        "url": "https://images.unsplash.com/photo-1488972685288-c3fd157d7c7a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1Mjh8MHwxfHNlYXJjaHwyfHxhYnN0cmFjdCUyMG1pbmltYWwlMjBhcmNoaXRlY3R1cmV8ZW58MHx8fHwxNzg0MDYxMjgwfDA&ixlib=rb-4.1.0&q=85",
+        "category": "hero_background",
+        "description": "Abstract gray building - use as a structural, premium background for marketing hero or login split-screen."
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1629494893504-d41e26a02631?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA4Mzl8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBzbWFydHBob25lJTIwbW9ja3VwfGVufDB8fHx8MTc4NDA2MTI4MHww&ixlib=rb-4.1.0&q=85",
+        "category": "product_mockup",
+        "description": "Black android smartphone on white textile - use for showcasing the QR code scanning flow on marketing page."
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzN8MHwxfHNlYXJjaHwyfHxjb3Jwb3JhdGUlMjB0ZWFtJTIwbWVldGluZ3xlbnwwfHx8fDE3ODQwMTQxMzR8MA&ixlib=rb-4.1.0&q=85",
+        "category": "about_team",
+        "description": "Corporate team meeting - use for social proof or 'built for teams' section."
+      }
+    ],
+    "icons": "Use lucide-react. Standardize stroke-width to 1.5 for a premium feel."
+  },
+  "components": {
+    "charts": "Use Recharts. Keep them clean, avoid default colors. Use primary (#FF3B30) and monochrome shades.",
+    "toasts": "Use Sonner for toasts.",
+    "forms": "Use Shadcn forms, inputs, selects. Avoid native <input> or <select>."
+  },
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "You tend to converge toward generic, 'on distribution' outputs. In frontend design, this creates what users call the 'AI slop' aesthetic. Avoid this: make creative, distinctive frontends that surprise and delight.",
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients.",
+    "Don't make generic centered layouts, simplistic gradients, and uniform styling.",
+    "Create depth through layered design elements with z-index hierarchy.",
+    "You MUST NOT apply universal transition (e.g., transition: all). Always add transitions for specific interactive elements excluding transforms.",
+    "You MUST NOT center align the app container (i.e., do not add .App { text-align: center; } in the css file).",
+    "Always use modern button styles like pill-shaped, or sharp button with interaction animations & color relevant to the app style.",
+    "NEVER: use AI assistant Emoji characters like 🤖🧠💭💡🔮🎯 etc for icons.",
+    "Every interaction needs micro-animations - hover states, transitions, entrance animations. Static = dead.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "NEVER use placeholder image URLs (via.placeholder.com etc). Use ONLY the provided image URLs.",
+    "All interactive and key informational elements MUST include a 'data-testid' attribute to facilitate robust automated testing."
+  ]
+}

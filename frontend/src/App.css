@@ -1,0 +1,5 @@
+.App {
+    text-align: left;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+}
