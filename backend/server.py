@@ -9,7 +9,7 @@ load_dotenv(ROOT_DIR / ".env")
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from contextlib import asynccontextmanager
 import logging
 
@@ -56,8 +56,8 @@ app.add_middleware(
     expose_headers=["*"],
 )
 
-# Public uploads mount (so QR logos in preview & downstream are served fast)
-uploads_dir = Path(os.environ.get("UPLOAD_DIR", "/app/backend/uploads"))
+# Uploads static directory
+uploads_dir = Path(os.environ.get("UPLOAD_DIR", str(ROOT_DIR / "uploads")))
 uploads_dir.mkdir(parents=True, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 
@@ -83,3 +83,28 @@ async def health():
 @app.get("/api/")
 async def root():
     return {"service": "QR Nexus API", "version": "1.0.0"}
+
+
+# ── Serve React frontend build (production mode) ──────────────────────────────
+# When `yarn build` has been run, serve the React app from FastAPI directly.
+# This means ONE port (8000) serves both API + frontend in production.
+# In local dev, React runs on port 3000 separately — this is a no-op then.
+
+FRONTEND_BUILD = ROOT_DIR.parent / "frontend" / "build"
+
+if FRONTEND_BUILD.exists():
+    # Serve React's static assets (JS, CSS, media chunks)
+    react_static = FRONTEND_BUILD / "static"
+    if react_static.exists():
+        app.mount("/static", StaticFiles(directory=str(react_static)), name="react-static")
+
+    @app.get("/{full_path:path}")
+    async def serve_react(full_path: str):
+        """Catch-all: serve React build files, fallback to index.html for SPA routing."""
+        file_path = FRONTEND_BUILD / full_path
+        if file_path.exists() and file_path.is_file():
+            return FileResponse(str(file_path))
+        # React Router handles unknown paths client-side
+        return FileResponse(str(FRONTEND_BUILD / "index.html"))
+else:
+    logger.info("No frontend build found — running API-only mode (dev). Run `yarn build` to enable frontend serving.")
