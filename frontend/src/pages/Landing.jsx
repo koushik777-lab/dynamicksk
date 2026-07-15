@@ -76,26 +76,74 @@ export default function Landing() {
       <section className="max-w-7xl mx-auto px-6 lg:px-12 py-24 border-t border-white/12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
-            <div className="text-[10px] uppercase tracking-[0.28em] text-[#FF3B30] mb-4">Scan → Decide → Redirect</div>
-            <h2 className="font-display text-5xl md:text-6xl leading-none tracking-[-0.02em] mb-6">
+            <div className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-[#FF3B30] bg-[#FF3B30]/10 border border-[#FF3B30]/20 px-3 py-1 mb-6 font-mono">
+              Scan → Decide → Redirect
+            </div>
+            <h2 className="font-display text-5xl md:text-6xl leading-tight tracking-[-0.02em] mb-6 font-bold">
               Every scan is<br />a decision point.
             </h2>
-            <p className="text-white/70 leading-relaxed mb-8 max-w-lg">
+            <p className="text-white/70 leading-relaxed mb-8 max-w-lg text-lg">
               QR Nexus routes each scan through your rules — geo, device, time, scan
               limit, expiry, password — before deciding where the visitor lands. Analytics
               are recorded before redirect, in under 100ms.
             </p>
-            <ul className="space-y-3 text-white/80">
-              {["Password protection", "Geo & device restrictions", "Expiry & scan limits", "Scheduled redirects", "Version rollback"].map((f) => (
+            <ul className="space-y-3 text-white/80 font-medium">
+              {["Password protection & zero-trust verification", "Geo-fencing & smart device OS targeting", "Time-based scheduling & instant expiry limits", "Live analytics pipeline with sub-80ms routing", "Instant one-click version rollback & audit history"].map((f) => (
                 <li key={f} className="flex items-center gap-3">
-                  <span className="size-1.5 bg-[#FF3B30]" /> <span>{f}</span>
+                  <span className="size-2 bg-[#FF3B30] shadow-[0_0_8px_#FF3B30]" /> <span>{f}</span>
                 </li>
               ))}
             </ul>
           </div>
-          <div className="relative">
-            <div className="absolute -inset-4 border border-white/12" />
-            <img src={phoneImg} alt="Scan a QR code" className="w-full aspect-[4/5] object-cover relative" />
+          
+          {/* High-Tech Interactive QR Decision Engine Card Mockup */}
+          <div className="relative p-8 rounded-2xl bg-gradient-to-br from-[#121212] via-[#0a0a0a] to-[#050505] border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.9)] overflow-hidden group">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#FF3B30]/10 rounded-full blur-3xl pointer-events-none group-hover:bg-[#FF3B30]/20 transition-all duration-700" />
+            
+            <div className="flex items-center justify-between pb-6 mb-6 border-b border-white/10 font-mono text-xs text-white/50">
+              <div className="flex items-center gap-2">
+                <span className="size-3 rounded-full bg-red-500/80" />
+                <span className="size-3 rounded-full bg-yellow-500/80" />
+                <span className="size-3 rounded-full bg-green-500/80" />
+                <span className="ml-2 text-white/70 font-semibold tracking-wider">ROUTING ENGINE v2.4</span>
+              </div>
+              <span className="text-[#FF3B30] bg-[#FF3B30]/10 px-2.5 py-1 rounded border border-[#FF3B30]/30 animate-pulse">● LIVE LATENCY: 14ms</span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+              {/* QR Emblem Display */}
+              <div className="md:col-span-5 flex flex-col items-center justify-center p-6 bg-white/5 border border-white/10 rounded-xl relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent" />
+                <div className="size-32 bg-[#0A0A0A] border-2 border-[#FF3B30] p-3 rounded-xl shadow-[0_0_25px_rgba(255,59,48,0.3)] grid place-items-center relative">
+                  <QrCode className="size-20 text-white stroke-[1.2]" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#FF3B30]/20 to-transparent pointer-events-none" />
+                </div>
+                <div className="mt-4 font-mono text-xs text-white/80 tracking-widest uppercase">qrnexus.cloud/r/demo</div>
+              </div>
+
+              {/* Decision Rules Pipeline */}
+              <div className="md:col-span-7 space-y-3">
+                {[
+                  { label: "1. Device Check", value: "iOS / Safari • Verified", status: "PASS", color: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10" },
+                  { label: "2. Geo-Location", value: "US / EU / India Allowed", status: "PASS", color: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10" },
+                  { label: "3. Access Rules", value: "Password & Time Limit OK", status: "PASS", color: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10" },
+                  { label: "4. Destination", value: "https://qrnexus.cloud/campaign-v2", status: "ROUTED", color: "text-[#FF3B30] border-[#FF3B30]/40 bg-[#FF3B30]/15 font-bold" },
+                ].map((step, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-white/[0.03] border border-white/10 text-xs font-mono">
+                    <div>
+                      <div className="text-white/60 mb-0.5">{step.label}</div>
+                      <div className="text-white font-semibold">{step.value}</div>
+                    </div>
+                    <span className={`px-2 py-1 rounded text-[10px] border ${step.color}`}>{step.status}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono text-white/40">
+              <span>SECURITY: ZERO-TRUST ACL</span>
+              <span>ENGINE: ASYNC PYTHON / FASTAPI</span>
+            </div>
           </div>
         </div>
       </section>
@@ -197,20 +245,27 @@ export default function Landing() {
 
 function Nav() {
   return (
-    <header className="fixed top-0 inset-x-0 z-40 glass bg-black/60 border-b border-white/12">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 h-16 flex items-center">
-        <Link to="/" className="flex items-center gap-2.5 font-display font-bold text-lg" data-testid="landing-logo">
-          <div className="size-8 bg-[#FF3B30] grid place-items-center font-bold text-lg">Q</div>
-          QR<span className="text-[#FF3B30]">.</span>NEXUS
+    <header className="fixed top-0 inset-x-0 z-50 backdrop-blur-xl bg-[#050505]/80 border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.8)] transition-all duration-300">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-3 font-display font-bold text-xl tracking-tight text-white group" data-testid="landing-logo">
+          <div className="size-9 bg-gradient-to-br from-[#FF3B30] to-[#B81D14] grid place-items-center font-bold text-lg text-white shadow-[0_0_15px_rgba(255,59,48,0.4)] group-hover:scale-105 transition-transform">
+            Q
+          </div>
+          <span>QR<span className="text-[#FF3B30]">.</span>NEXUS</span>
         </Link>
-        <nav className="hidden md:flex items-center gap-8 mx-auto text-sm text-white/70">
-          <Link to="/pricing" className="hover:text-white">Pricing</Link>
-          <Link to="/docs" className="hover:text-white">Docs</Link>
-          <Link to="/contact" className="hover:text-white">Contact</Link>
+        
+        <nav className="hidden md:flex items-center gap-1 bg-white/5 border border-white/10 px-6 py-2 rounded-full text-sm font-medium backdrop-blur-md">
+          <Link to="/" className="px-4 py-1.5 rounded-full bg-[#FF3B30]/10 text-[#FF3B30] border border-[#FF3B30]/30 transition-all font-semibold">Home</Link>
+          <Link to="/pricing" className="px-4 py-1.5 rounded-full text-white/70 hover:text-white hover:bg-white/5 transition-all">Pricing</Link>
+          <Link to="/docs" className="px-4 py-1.5 rounded-full text-white/70 hover:text-white hover:bg-white/5 transition-all">Docs</Link>
+          <Link to="/contact" className="px-4 py-1.5 rounded-full text-white/70 hover:text-white hover:bg-white/5 transition-all">Contact</Link>
         </nav>
-        <Button asChild className="bg-[#FF3B30] hover:bg-[#D63026] text-white rounded-none">
-          <Link to="/login" data-testid="nav-login">Sign in</Link>
-        </Button>
+
+        <div className="flex items-center gap-4">
+          <Button asChild className="bg-gradient-to-r from-[#FF3B30] to-[#D63026] hover:from-[#E02E24] hover:to-[#B81D14] text-white px-6 h-11 text-sm font-medium tracking-wide shadow-[0_0_20px_rgba(255,59,48,0.3)] hover:shadow-[0_0_25px_rgba(255,59,48,0.6)] transition-all duration-300 border border-[#FF3B30]/40">
+            <Link to="/login" data-testid="nav-login">Sign in <ArrowRight className="ml-2 size-4" /></Link>
+          </Button>
+        </div>
       </div>
     </header>
   );
